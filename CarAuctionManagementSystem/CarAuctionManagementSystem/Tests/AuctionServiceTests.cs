@@ -18,7 +18,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void AddVehicle_AddsVehicleToList_WhenVehicleIsAdded()
+        public void AddVehicle_WhenVehicleIsAdded_AddsVehicleToList()
         {
             // Arrange
             var auctionService = new AuctionService(DataFilePath);
@@ -36,7 +36,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void AddVehicle_DoesNotAddVehicle_WhenUniqueIdentifierAlreadyExists()
+        public void AddVehicle_WhenUniqueIdentifierAlreadyExists_DoesNotAddVehicle()
         {
             // Arrange
             var auctionService = new AuctionService(DataFilePath);
@@ -54,7 +54,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void AddVehicle_SavesDataToFile()
+        public void AddVehicle_WhenVehicleIsAdded_SavesDataToFile()
         {
             // Arrange
             var auctionService = new AuctionService(DataFilePath);
@@ -78,7 +78,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void AddVehicle_ThrowsException_WhenFilePathIsEmpty()
+        public void AddVehicle_WhenFilePathIsEmpty_ThrowsException()
         {
             // Act & Assert
             var ex = Assert.Throws<ArgumentException>(() =>
@@ -91,7 +91,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void AddVehicle_ThrowsException_WhenFilePathIsInvalid()
+        public void AddVehicle_WhenFilePathIsInvalid_ThrowsException()
         {
             // Act & Assert
             var ex = Assert.Throws<ArgumentException>(() =>
@@ -104,7 +104,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void SearchVehicles_ReturnsAllVehicles_WhenPredicateIsNull()
+        public void SearchVehicles_WhenPredicateIsNull_ReturnsAllVehicles()
         {
             // Arrange
             var auctionService = new AuctionService(DataFilePath);
@@ -122,7 +122,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void SearchVehicles_ReturnsEmptyList_WhenNoMatchFound()
+        public void SearchVehicles_WhenNoMatchFound_ReturnsEmptyList()
         {
             // Arrange
             var auctionService = new AuctionService(DataFilePath);
@@ -137,7 +137,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void SearchVehicles_ReturnsEmptyList_WhenNoVehiclesAdded()
+        public void SearchVehicles_WhenNoVehiclesAdded_ReturnsEmptyList()
         {
             // Arrange
             var auctionService = new AuctionService(DataFilePath);

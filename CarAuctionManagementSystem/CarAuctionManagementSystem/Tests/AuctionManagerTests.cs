@@ -22,7 +22,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void AddVehicle_ThrowsException_WhenUniqueIdentifierAlreadyExists()
+        public void AddVehicle_WhenUniqueIdentifierAlreadyExists_ThrowsException()
         {
             // Act & Assert
             Assert.Throws<ArgumentException>(() =>
@@ -32,7 +32,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void AddVehicle_AddsVehicle_WhenParametersAreValid()
+        public void AddVehicle_WhenParametersAreValid_AddsVehicle()
         {
             // Act
             auctionManager.AddVehicle("6", "Mercedes", "C-Class", 2020, 35000, VehicleType.Sedan, new Dictionary<string, object> { { "NumDoors", 4 } });
@@ -48,7 +48,7 @@ namespace CarAuctionManagementSystem.Tests
 
 
         [Test]
-        public void CloseAuction_ThrowsException_WhenAuctionAlreadyClosed()
+        public void CloseAuction_WhenAuctionAlreadyClosed_ThrowsException()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -62,7 +62,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void CloseAuction_ThrowsException_WhenVehicleIdIsEmpty()
+        public void CloseAuction_WhenVehicleIdIsEmpty_ThrowsException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() =>
@@ -72,7 +72,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void CloseAuction_ThrowsException_WhenVehicleIdIsNull()
+        public void CloseAuction_WhenVehicleIdIsNull_ThrowsException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() =>
@@ -82,7 +82,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void GetAuction_ReturnsAuction_WhenAuctionStartedForVehicle()
+        public void GetAuction_WhenAuctionStartedForVehicle_ReturnsAuction()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -95,7 +95,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void GetAuction_ReturnsCorrectAuction_WhenMultipleAuctionsStarted()
+        public void GetAuction_WhenMultipleAuctionsStarted_ReturnsCorrectAuction()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -112,7 +112,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void GetAuction_ReturnsCorrectAuction_WhenSameAuctionStartedTwice()
+        public void GetAuction_WhenSameAuctionStartedTwice_ReturnsCorrectAuction()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -131,7 +131,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void GetAuction_ReturnsCorrectAuction_WhenAuctionClosedAndNewAuctionStarted()
+        public void GetAuction_WhenAuctionClosedAndNewAuctionStarted_ReturnsCorrectAuction()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -147,7 +147,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void GetAuction_ReturnsNull_WhenNoAuctionStartedForVehicle()
+        public void GetAuction_WhenNoAuctionStartedForVehicle_ReturnsInvalidOperationException()
         {
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() =>
@@ -157,7 +157,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void GetAuction_ReturnsNull_WhenVehicleIdIsEmpty()
+        public void GetAuction_WhenVehicleIdIsEmpty_ReturnsInvalidOperationException()
         {
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() =>
@@ -167,7 +167,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void GetAuction_ReturnsNullException_WhenVehicleIdIsNull()
+        public void GetAuction_WhenVehicleIdIsNull_ReturnsNullException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() =>
@@ -177,7 +177,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void PlaceBid_SuccessfulBid_WhenVehicleIsValid()
+        public void PlaceBid_WhenVehicleIsValid_SuccessfulBid()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -190,7 +190,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void PlaceBid_UnsuccessfulBid_AuctionNotActive()
+        public void PlaceBid_AuctionNotActive_UnsuccessfulBid()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -201,7 +201,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void PlaceBid_UnsuccessfulBid_InvalidBidAmount()
+        public void PlaceBid_InvalidBidAmount_UnsuccessfulBid()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -212,21 +212,21 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void PlaceBid_UnsuccessfulBid_VehicleNotFound()
+        public void PlaceBid_WhenVehicleNotExists_UnsuccessfulBid()
         {
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => auctionManager.PlaceBid("vehicle4", 1500, "Michael"));
+            Assert.Throws<InvalidOperationException>(() => auctionManager.PlaceBid("9999", 1500, "Michael"));
         }
 
         [Test]
-        public void PlaceBid_UnsuccessfulBid_InvalidVehicleId()
+        public void PlaceBid_InvalidVehicleId_UnsuccessfulBid()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => auctionManager.PlaceBid(null, 1500, "Peter"));
         }
 
         [Test]
-        public void SearchVehicles_ReturnsAllVehicles_WhenNoCriteriaProvided()
+        public void SearchVehicles_WhenNoCriteriaProvided_ReturnsAllVehicles()
         {
             // Act
             var result = auctionManager.SearchVehicles();
@@ -236,7 +236,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void SearchVehicles_ReturnsAllVehicles_WhenInvalidManufacturerIsProvided()
+        public void SearchVehicles_WhenInvalidManufacturerIsProvided_ReturnsZeroVehicles()
         {
             // Act
             var result = auctionManager.SearchVehicles(manufacturer: "XYZ");
@@ -246,7 +246,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void SearchVehicles_ReturnsAllVehicles_WhenInvalidModelIsProvided()
+        public void SearchVehicles_WhenInvalidModelIsProvided_ReturnsZeroVehicles()
         {
             // Act
             var result = auctionManager.SearchVehicles(model: "XYZ");
@@ -256,7 +256,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void SearchVehicles_ReturnsAllVehicles_WhenInvalidYearIsProvided()
+        public void SearchVehicles_WhenInvalidYearIsProvided_ReturnsZeroVehicles()
         {
             // Act
             var result = auctionManager.SearchVehicles(year: 3000);
@@ -266,7 +266,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void StartAuction_ThrowsException_WhenAuctionAlreadyStartedForVehicle()
+        public void StartAuction_WhenAuctionAlreadyStartedForVehicle_ThrowsException()
         {
             // Arrange
             auctionManager.StartAuction("1");
@@ -279,7 +279,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void StartAuction_ThrowsException_WhenVehicleIdIsEmpty()
+        public void StartAuction_WhenVehicleIdIsEmpty_ThrowsException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() =>
@@ -289,7 +289,7 @@ namespace CarAuctionManagementSystem.Tests
         }
 
         [Test]
-        public void StartAuction_ThrowsException_WhenVehicleIdIsNull()
+        public void StartAuction_WhenVehicleIdIsNull_ThrowsException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() =>

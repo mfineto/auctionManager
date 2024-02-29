@@ -213,11 +213,12 @@ namespace CarAuctionManagementSystem.Controllers
                 if (!string.IsNullOrEmpty(startingBidInput))
                     startingBid = decimal.Parse(startingBidInput);
 
-                Console.Write("Vehicle Type (leave blank to skip): ");
+                Console.Write("");
                 Console.WriteLine("1. Hatchback");
                 Console.WriteLine("2. Sedan");
                 Console.WriteLine("3. SUV");
                 Console.WriteLine("4. Truck");
+                Console.Write("Vehicle Type (leave blank to skip): ");
                 string vehicleTypeInput = Console.ReadLine();
                 VehicleType? vehicleType = null;
                 if (!string.IsNullOrEmpty(vehicleTypeInput))
