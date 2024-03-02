@@ -204,6 +204,22 @@
         }
 
         [Fact]
+        public void SearchVehicles_WhenValidManufacturer_ReturnsVehicles()
+        {
+            var result = this.auctionManager.SearchVehicles(manufacturer: "Mercedes");
+
+            Assert.True(result.Any());
+        }
+
+        [Fact]
+        public void SearchVehicles_WhenValidVehicleType_ReturnsVehicles()
+        {
+            var result = this.auctionManager.SearchVehicles(vehicleType: VehicleType.Truck);
+
+            Assert.True(result.Any());
+        }
+
+        [Fact]
         public void StartAuction_WhenAuctionAlreadyStartedForVehicle_ThrowsException()
         {
             this.auctionManager.StartAuction("1");

@@ -238,7 +238,7 @@
                     vehicleType = type;
                 }
 
-                var results = this.auctionManager.SearchVehicles(manufacturer, model, year, startingBid);
+                var results = this.auctionManager.SearchVehicles(manufacturer, model, year, startingBid, vehicleType);
 
                 if (results.Count == 0)
                 {
