@@ -293,11 +293,7 @@
         private void DisplayVehicleDetails(string uniqueIdentifier)
         {
             var vehicle = this.auctionManager.GetVehicleById(uniqueIdentifier);
-            Console.WriteLine($"Unique Identifier: {vehicle.UniqueIdentifier}");
-            Console.WriteLine($"Manufacturer: {vehicle.Manufacturer}");
-            Console.WriteLine($"Model: {vehicle.Model}");
-            Console.WriteLine($"Year: {vehicle.Year}");
-            Console.WriteLine($"Starting Bid: {vehicle.StartingBid}");
+            vehicle.DisplayDetails();
         }
     }
 }
