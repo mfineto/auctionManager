@@ -229,13 +229,24 @@
 
                 if (!string.IsNullOrEmpty(vehicleTypeInput))
                 {
-                    if (!Enum.TryParse(vehicleTypeInput, out VehicleType type))
+                    switch (vehicleTypeInput)
                     {
-                        Console.WriteLine("Invalid vehicle type.");
-                        return;
+                        case "1":
+                            vehicleType = VehicleType.Hatchback;
+                            break;
+                        case "2":
+                            vehicleType = VehicleType.Sedan;
+                            break;
+                        case "3":
+                            vehicleType = VehicleType.SUV;
+                            break;
+                        case "4":
+                            vehicleType = VehicleType.Truck;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid vehicle type.");
+                            return;
                     }
-
-                    vehicleType = type;
                 }
 
                 var results = this.auctionManager.SearchVehicles(manufacturer, model, year, startingBid, vehicleType);
