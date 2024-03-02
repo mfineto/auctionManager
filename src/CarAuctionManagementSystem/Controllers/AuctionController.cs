@@ -1,17 +1,15 @@
-﻿using System;
-using CarAuctionManagementSystem.Domain;
-using CarAuctionManagementSystem.Models;
-using ConsoleTables;
-
-namespace CarAuctionManagementSystem.Controllers
+﻿namespace CarAuctionManagementSystem.Controllers
 {
+    using CarAuctionManagementSystem.Domain;
+    using ConsoleTables;
+
     public class AuctionController
     {
-        private AuctionManager auctionManager;
+        private readonly AuctionManager auctionManager;
 
         public AuctionController()
         {
-            auctionManager = new AuctionManager();
+            this.auctionManager = new AuctionManager();
         }
 
         public void Run()
@@ -30,27 +28,27 @@ namespace CarAuctionManagementSystem.Controllers
                 Console.WriteLine("7. Exit");
 
                 Console.Write("Select an option: ");
-                string input = Console.ReadLine();
+                var input = Console.ReadLine();
 
                 switch (input)
                 {
                     case "1":
-                        AddVehicle();
+                        this.AddVehicle();
                         break;
                     case "2":
-                        StartAuction();
+                        this.StartAuction();
                         break;
                     case "3":
-                        CloseAuction();
+                        this.CloseAuction();
                         break;
                     case "4":
-                        PlaceBid();
+                        this.PlaceBid();
                         break;
                     case "5":
-                        SearchVehicles();
+                        this.SearchVehicles();
                         break;
                     case "6":
-                        ListAuctions();
+                        this.ListAuctions();
                         break;
                     case "7":
                         Console.WriteLine("Exiting...");
@@ -68,30 +66,29 @@ namespace CarAuctionManagementSystem.Controllers
             {
                 Console.WriteLine("Enter vehicle details:");
                 Console.Write("Unique Identifier: ");
-                string uniqueIdentifier = Console.ReadLine();
+                var uniqueIdentifier = Console.ReadLine();
 
-
-                if (auctionManager.GetVehicleById(uniqueIdentifier) != null)
+                if (this.auctionManager.GetVehicleById(uniqueIdentifier) != null)
                 {
                     Console.WriteLine("A vehicle with the same unique identifier already exists.");
                     return;
                 }
 
                 Console.Write("Manufacturer: ");
-                string manufacturer = Console.ReadLine();
+                var manufacturer = Console.ReadLine();
                 Console.Write("Model: ");
-                string model = Console.ReadLine();
+                var model = Console.ReadLine();
                 Console.Write("Year: ");
-                int year = int.Parse(Console.ReadLine());
+                var year = int.Parse(Console.ReadLine());
                 Console.Write("Starting Bid: ");
-                decimal startingBid = decimal.Parse(Console.ReadLine());
+                var startingBid = decimal.Parse(Console.ReadLine());
                 Console.WriteLine("Select vehicle type:");
                 Console.WriteLine("1. Hatchback");
                 Console.WriteLine("2. Sedan");
                 Console.WriteLine("3. SUV");
                 Console.WriteLine("4. Truck");
                 Console.Write("Enter your choice: ");
-                string typeInput = Console.ReadLine();
+                var typeInput = Console.ReadLine();
                 VehicleType vehicleType;
                 switch (typeInput)
                 {
@@ -113,30 +110,30 @@ namespace CarAuctionManagementSystem.Controllers
                 }
 
                 // Additional parameters based on vehicle type
-                Dictionary<string, object> additionalParameters = new Dictionary<string, object>();
+                var additionalParameters = new Dictionary<string, object>();
                 if (vehicleType == VehicleType.Hatchback || vehicleType == VehicleType.Sedan)
                 {
                     Console.Write("Number of Doors: ");
-                    int numDoors = int.Parse(Console.ReadLine());
+                    var numDoors = int.Parse(Console.ReadLine());
                     additionalParameters.Add("NumDoors", numDoors);
                 }
                 else if (vehicleType == VehicleType.SUV)
                 {
                     Console.Write("Number of Seats: ");
-                    int numSeats = int.Parse(Console.ReadLine());
+                    var numSeats = int.Parse(Console.ReadLine());
                     additionalParameters.Add("NumSeats", numSeats);
                 }
                 else if (vehicleType == VehicleType.Truck)
                 {
                     Console.Write("Load Capacity (tons): ");
-                    decimal loadCapacity = decimal.Parse(Console.ReadLine());
+                    var loadCapacity = decimal.Parse(Console.ReadLine());
                     additionalParameters.Add("LoadCapacity", loadCapacity);
                 }
 
-                auctionManager.AddVehicle(uniqueIdentifier, manufacturer, model, year, startingBid, vehicleType, additionalParameters);
+                this.auctionManager.AddVehicle(uniqueIdentifier, manufacturer, model, year, startingBid, vehicleType, additionalParameters);
 
                 Console.WriteLine("Vehicle successfully added:");
-                DisplayVehicleDetails(uniqueIdentifier);
+                this.DisplayVehicleDetails(uniqueIdentifier);
             }
             catch (Exception ex)
             {
@@ -149,8 +146,8 @@ namespace CarAuctionManagementSystem.Controllers
             try
             {
                 Console.Write("Enter unique identifier of the vehicle to start auction: ");
-                string uniqueIdentifier = Console.ReadLine();
-                auctionManager.StartAuction(uniqueIdentifier);
+                var uniqueIdentifier = Console.ReadLine();
+                this.auctionManager.StartAuction(uniqueIdentifier);
                 Console.WriteLine("Auction opened successfully.");
             }
             catch (Exception ex)
@@ -164,8 +161,8 @@ namespace CarAuctionManagementSystem.Controllers
             try
             {
                 Console.Write("Enter unique identifier of the vehicle to close auction: ");
-                string uniqueIdentifier = Console.ReadLine();
-                auctionManager.CloseAuction(uniqueIdentifier);
+                var uniqueIdentifier = Console.ReadLine();
+                this.auctionManager.CloseAuction(uniqueIdentifier);
                 Console.WriteLine("Auction closed successfully.");
             }
             catch (Exception ex)
@@ -179,12 +176,12 @@ namespace CarAuctionManagementSystem.Controllers
             try
             {
                 Console.Write("Enter unique identifier of the vehicle to place bid: ");
-                string uniqueIdentifier = Console.ReadLine();
+                var uniqueIdentifier = Console.ReadLine();
                 Console.Write("Enter bid amount: ");
-                decimal bidAmount = decimal.Parse(Console.ReadLine());
+                var bidAmount = decimal.Parse(Console.ReadLine());
                 Console.Write("Enter bidder name: ");
-                string bidderName = Console.ReadLine();
-                auctionManager.PlaceBid(uniqueIdentifier, bidAmount, bidderName);
+                var bidderName = Console.ReadLine();
+                this.auctionManager.PlaceBid(uniqueIdentifier, bidAmount, bidderName);
                 Console.WriteLine("Bid placed successfully.");
             }
             catch (Exception ex)
@@ -199,19 +196,25 @@ namespace CarAuctionManagementSystem.Controllers
             {
                 Console.WriteLine("Enter search criteria:");
                 Console.Write("Manufacturer (leave blank to skip): ");
-                string manufacturer = Console.ReadLine();
+                var manufacturer = Console.ReadLine();
                 Console.Write("Model (leave blank to skip): ");
-                string model = Console.ReadLine();
+                var model = Console.ReadLine();
                 Console.Write("Year (leave blank to skip): ");
-                string yearInput = Console.ReadLine();
+                var yearInput = Console.ReadLine();
                 int? year = null;
                 if (!string.IsNullOrEmpty(yearInput))
+                {
                     year = int.Parse(yearInput);
+                }
+
                 Console.Write("Starting Bid (leave blank to skip): ");
-                string startingBidInput = Console.ReadLine();
+                var startingBidInput = Console.ReadLine();
                 decimal? startingBid = null;
+
                 if (!string.IsNullOrEmpty(startingBidInput))
+                {
                     startingBid = decimal.Parse(startingBidInput);
+                }
 
                 Console.Write("");
                 Console.WriteLine("1. Hatchback");
@@ -219,8 +222,11 @@ namespace CarAuctionManagementSystem.Controllers
                 Console.WriteLine("3. SUV");
                 Console.WriteLine("4. Truck");
                 Console.Write("Vehicle Type (leave blank to skip): ");
-                string vehicleTypeInput = Console.ReadLine();
+
+                var vehicleTypeInput = Console.ReadLine();
+
                 VehicleType? vehicleType = null;
+
                 if (!string.IsNullOrEmpty(vehicleTypeInput))
                 {
                     if (!Enum.TryParse(vehicleTypeInput, out VehicleType type))
@@ -228,10 +234,11 @@ namespace CarAuctionManagementSystem.Controllers
                         Console.WriteLine("Invalid vehicle type.");
                         return;
                     }
+
                     vehicleType = type;
                 }
 
-                var results = auctionManager.SearchVehicles(manufacturer, model, year, startingBid);
+                var results = this.auctionManager.SearchVehicles(manufacturer, model, year, startingBid);
 
                 if (results.Count == 0)
                 {
@@ -254,7 +261,7 @@ namespace CarAuctionManagementSystem.Controllers
             {
                 Console.WriteLine("All Auctions:");
 
-                var auctions = auctionManager.GetAuctions();
+                var auctions = this.auctionManager.GetAuctions();
 
                 if (auctions.Count == 0)
                 {
@@ -272,7 +279,7 @@ namespace CarAuctionManagementSystem.Controllers
                     auction.AssociatedVehicle.Manufacturer,
                     auction.AssociatedVehicle.Model,
                     auction.AssociatedVehicle.Year,
-                    auction.AssociatedVehicle.StartingBid
+                    auction.AssociatedVehicle.StartingBid,
                 }).OrderBy(x => x.IsActive);
 
                 ConsoleTable.From(results).Write();
@@ -285,7 +292,7 @@ namespace CarAuctionManagementSystem.Controllers
 
         private void DisplayVehicleDetails(string uniqueIdentifier)
         {
-            var vehicle = auctionManager.GetVehicleById(uniqueIdentifier);
+            var vehicle = this.auctionManager.GetVehicleById(uniqueIdentifier);
             Console.WriteLine($"Unique Identifier: {vehicle.UniqueIdentifier}");
             Console.WriteLine($"Manufacturer: {vehicle.Manufacturer}");
             Console.WriteLine($"Model: {vehicle.Model}");

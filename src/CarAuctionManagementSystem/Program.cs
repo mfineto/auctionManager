@@ -1,8 +1,7 @@
-﻿using System;
-using CarAuctionManagementSystem.Controllers;
-
-namespace CarAuctionManagementSystem
+﻿namespace CarAuctionManagementSystem
 {
+    using CarAuctionManagementSystem.Controllers;
+
     public class Program
     {
         static void Main(string[] args)

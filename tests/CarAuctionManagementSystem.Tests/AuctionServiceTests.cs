@@ -1,45 +1,44 @@
-﻿using CarAuctionManagementSystem.Models;
-using CarAuctionManagementSystem.Services;
-using Newtonsoft.Json;
-using NUnit.Framework;
-
-namespace CarAuctionManagementSystem.Tests
+﻿namespace CarAuctionManagementSystem.Services
 {
-    [TestFixture]
+    using CarAuctionManagementSystem.Models;
+    using Newtonsoft.Json;
+    using Xunit;
+
     public class AuctionServiceTests
     {
-        private string DataFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\test_vehicles{DateTime.Now.ToString("ddMMyyyy_HHmmss")}.json";
+        private readonly string dataFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\test_vehicles{DateTime.Now:ddMMyyyy_HHmmss}.json";
 
-        [SetUp]
-        public void Setup()
+        public AuctionServiceTests()
         {
-            if (File.Exists(DataFilePath))
-                File.Delete(DataFilePath);
+            if (File.Exists(this.dataFilePath))
+            {
+                File.Delete(this.dataFilePath);
+            }
         }
 
-        [Test]
+        [Fact]
         public void AddVehicle_WhenVehicleIsAdded_AddsVehicleToList()
         {
             // Arrange
-            var auctionService = new AuctionService(DataFilePath);
+            var auctionService = new AuctionService(this.dataFilePath);
             var vehicle = new Sedan("123", "Toyota", "Prius", 2022, 15000, 4);
 
             // Act
             auctionService.AddVehicle(vehicle);
 
             // Assert
-            var jsonData = File.ReadAllText(DataFilePath);
+            var jsonData = File.ReadAllText(this.dataFilePath);
             var vehicles = JsonConvert.DeserializeObject<List<Sedan>>(jsonData);
 
-            Assert.That(vehicles.Count, Is.EqualTo(1));
-            Assert.That(vehicle.UniqueIdentifier, Is.EqualTo(vehicles[0].UniqueIdentifier));
+            Assert.Single(vehicles);
+            Assert.Equal(vehicle.UniqueIdentifier, vehicles[0].UniqueIdentifier);
         }
 
-        [Test]
+        [Fact]
         public void AddVehicle_WhenUniqueIdentifierAlreadyExists_DoesNotAddVehicle()
         {
             // Arrange
-            var auctionService = new AuctionService(DataFilePath);
+            var auctionService = new AuctionService(this.dataFilePath);
             var sedan = new Sedan("123", "Toyota", "Prius", 2022, 15000, 4);
             auctionService.AddVehicle(sedan);
 
@@ -50,34 +49,31 @@ namespace CarAuctionManagementSystem.Tests
                 auctionService.AddVehicle(sedan);
             });
 
-            Assert.That(ex, Is.Not.Null);
+            Assert.NotNull(ex);
         }
 
-        [Test]
+        [Fact]
         public void AddVehicle_WhenVehicleIsAdded_SavesDataToFile()
         {
             // Arrange
-            var auctionService = new AuctionService(DataFilePath);
+            var auctionService = new AuctionService(this.dataFilePath);
             var vehicle = new Sedan("123", "VW", "Golf", 2022, 15000, 4);
 
             // Act
             auctionService.AddVehicle(vehicle);
 
             // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(File.Exists(DataFilePath), Is.True);
-                var jsonData = File.ReadAllText(DataFilePath);
-                Assert.That(string.IsNullOrEmpty(jsonData), Is.False);
+            Assert.True(File.Exists(this.dataFilePath));
+            var jsonData = File.ReadAllText(this.dataFilePath);
+            Assert.False(string.IsNullOrEmpty(jsonData));
 
-                var vehicles = JsonConvert.DeserializeObject<List<Sedan>>(jsonData);
+            var vehicles = JsonConvert.DeserializeObject<List<Sedan>>(jsonData);
 
-                Assert.That(vehicles.Count, Is.EqualTo(1));
-                Assert.That(vehicle.UniqueIdentifier, Is.EqualTo(vehicles[0].UniqueIdentifier));
-            });
+            Assert.Single(vehicles);
+            Assert.Equal(vehicle.UniqueIdentifier, vehicles[0].UniqueIdentifier);
         }
 
-        [Test]
+        [Fact]
         public void AddVehicle_WhenFilePathIsEmpty_ThrowsException()
         {
             // Act & Assert
@@ -87,10 +83,10 @@ namespace CarAuctionManagementSystem.Tests
                 var auctionService = new AuctionService("");
             });
 
-            Assert.That(ex, Is.Not.Null);
+            Assert.NotNull(ex);
         }
 
-        [Test]
+        [Fact]
         public void AddVehicle_WhenFilePathIsInvalid_ThrowsException()
         {
             // Act & Assert
@@ -100,14 +96,14 @@ namespace CarAuctionManagementSystem.Tests
                 var auctionService = new AuctionService("invalid\\path\\test_vehicles.json");
             });
 
-            Assert.That(ex, Is.Not.Null);
+            Assert.NotNull(ex);
         }
 
-        [Test]
+        [Fact]
         public void SearchVehicles_WhenPredicateIsNull_ReturnsAllVehicles()
         {
             // Arrange
-            var auctionService = new AuctionService(DataFilePath);
+            var auctionService = new AuctionService(this.dataFilePath);
             var sedan = new Sedan("123", "Honda", "Civic", 2022, 15000, 4);
             var suv = new SUV("456", "Honda", "CR-V", 2021, 20000, 5);
             auctionService.AddVehicle(sedan);
@@ -117,15 +113,14 @@ namespace CarAuctionManagementSystem.Tests
             var searchResult = auctionService.SearchVehicles(null);
 
             // Assert
-            Assert.That(searchResult.Count, Is.EqualTo(2));
-
+            Assert.Equal(2, searchResult.Count);
         }
 
-        [Test]
+        [Fact]
         public void SearchVehicles_WhenNoMatchFound_ReturnsEmptyList()
         {
             // Arrange
-            var auctionService = new AuctionService(DataFilePath);
+            var auctionService = new AuctionService(this.dataFilePath);
             var sedan = new Sedan("123", "VW", "Golf", 2022, 15000, 4);
             auctionService.AddVehicle(sedan);
 
@@ -133,20 +128,20 @@ namespace CarAuctionManagementSystem.Tests
             var searchResult = auctionService.SearchVehicles(v => v.Manufacturer == "Honda");
 
             // Assert
-            Assert.That(searchResult, Is.Empty);
+            Assert.Empty(searchResult);
         }
 
-        [Test]
+        [Fact]
         public void SearchVehicles_WhenNoVehiclesAdded_ReturnsEmptyList()
         {
             // Arrange
-            var auctionService = new AuctionService(DataFilePath);
+            var auctionService = new AuctionService(this.dataFilePath);
 
             // Act
             var searchResult = auctionService.SearchVehicles(v => v.Manufacturer == "Toyota");
 
             // Assert
-            Assert.That(searchResult, Is.Empty);
+            Assert.Empty(searchResult);
         }
     }
 }

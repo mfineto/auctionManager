@@ -1,16 +1,16 @@
-﻿using CarAuctionManagementSystem.Models;
-
-namespace CarAuctionManagementSystem.Domain
+﻿namespace CarAuctionManagementSystem.Domain
 {
+    using CarAuctionManagementSystem.Models;
+
     public class AuctionManager
     {
-        private Dictionary<string, Auction> auctions;
-        private List<IVehicle> vehicles;
+        private readonly Dictionary<string, Auction> auctions;
+        private readonly List<IVehicle> vehicles;
 
         public AuctionManager()
         {
-            auctions = new Dictionary<string, Auction>();
-            vehicles = new List<IVehicle>();
+            this.auctions = new Dictionary<string, Auction>();
+            this.vehicles = new List<IVehicle>();
         }
 
         public void AddVehicle(string uniqueIdentifier, string manufacturer, string model, int year, decimal startingBid, VehicleType vehicleType, Dictionary<string, object> additionalParameters)
@@ -25,39 +25,37 @@ namespace CarAuctionManagementSystem.Domain
             switch (vehicleType)
             {
                 case VehicleType.Hatchback:
-                    int hatchbackDoors = Convert.ToInt32(additionalParameters["NumDoors"]);
+                    var hatchbackDoors = Convert.ToInt32(additionalParameters["NumDoors"]);
                     newVehicle = new Hatchback(uniqueIdentifier, manufacturer, model, year, startingBid, hatchbackDoors);
                     break;
                 case VehicleType.Sedan:
-                    int sedanDoors = Convert.ToInt32(additionalParameters["NumDoors"]);
+                    var sedanDoors = Convert.ToInt32(additionalParameters["NumDoors"]);
                     newVehicle = new Sedan(uniqueIdentifier, manufacturer, model, year, startingBid, sedanDoors);
                     break;
                 case VehicleType.SUV:
-                    int suvSeats = Convert.ToInt32(additionalParameters["NumSeats"]);
+                    var suvSeats = Convert.ToInt32(additionalParameters["NumSeats"]);
                     newVehicle = new SUV(uniqueIdentifier, manufacturer, model, year, startingBid, suvSeats);
                     break;
                 case VehicleType.Truck:
-                    int truckLoadCapacity = Convert.ToInt32(additionalParameters["LoadCapacity"]);
+                    var truckLoadCapacity = Convert.ToInt32(additionalParameters["LoadCapacity"]);
                     newVehicle = new Truck(uniqueIdentifier, manufacturer, model, year, startingBid, truckLoadCapacity);
                     break;
                 default:
                     throw new ArgumentException("Invalid vehicle type.");
             }
 
-            vehicles.Add(newVehicle);
+            this.vehicles.Add(newVehicle);
         }
-
 
         public List<IVehicle> SearchVehicles(string manufacturer = null, string model = null, int? year = null, decimal? startingBid = null, VehicleType? vehicleType = null)
         {
             var result = new List<IVehicle>();
 
-            foreach (var vehicle in vehicles)
+            foreach (var vehicle in this.vehicles)
             {
-                // Verifica se o tipo de veículo corresponde ao tipo especificado na pesquisa
                 if (IsVehicleTypeMatch(vehicle, vehicleType) &&
-                    (String.IsNullOrEmpty(manufacturer) || vehicle.Manufacturer == manufacturer) &&
-                    (String.IsNullOrEmpty(model) || vehicle.Model == model) &&
+                    (string.IsNullOrEmpty(manufacturer) || vehicle.Manufacturer == manufacturer) &&
+                    (string.IsNullOrEmpty(model) || vehicle.Model == model) &&
                     (!year.HasValue || vehicle.Year == year) &&
                     (!startingBid.HasValue || vehicle.StartingBid == startingBid))
                 {
@@ -72,26 +70,22 @@ namespace CarAuctionManagementSystem.Domain
         {
             ValidateVehicleId(vehicleId);
 
-            var vehicle = this.GetVehicleById(vehicleId);
-            if (vehicle == null)
-            {
-                throw new InvalidOperationException("Vehicle not found.");
-            }
+            var vehicle = this.GetVehicleById(vehicleId) ?? throw new InvalidOperationException("Vehicle not found.");
 
-            if (auctions.ContainsKey(vehicleId))
+            if (this.auctions.TryGetValue(vehicleId, out var value))
             {
-                if (auctions[vehicleId].IsActive)
+                if (value.IsActive)
                 {
                     throw new InvalidOperationException("Auction is already active for this vehicle.");
                 }
 
-                auctions[vehicleId].Start();
+                value.Start();
             }
             else
             {
                 var auction = new Auction(vehicle, vehicle.StartingBid);
                 auction.Start();
-                auctions.Add(vehicleId, auction);
+                this.auctions.Add(vehicleId, auction);
             }
         }
 
@@ -99,11 +93,11 @@ namespace CarAuctionManagementSystem.Domain
         {
             ValidateVehicleId(vehicleId);
 
-            if (auctions.ContainsKey(vehicleId))
+            if (this.auctions.TryGetValue(vehicleId, out var value))
             {
-                if (auctions[vehicleId].IsActive)
+                if (value.IsActive)
                 {
-                    auctions[vehicleId].Close();
+                    value.Close();
                 }
                 else
                 {
@@ -118,9 +112,9 @@ namespace CarAuctionManagementSystem.Domain
 
         public void PlaceBid(string vehicleId, decimal amount, string bidderName)
         {
-            if (auctions.ContainsKey(vehicleId))
+            if (this.auctions.TryGetValue(vehicleId, out var value))
             {
-                auctions[vehicleId].PlaceBid(amount, bidderName);
+                value.PlaceBid(amount, bidderName);
             }
             else
             {
@@ -130,9 +124,9 @@ namespace CarAuctionManagementSystem.Domain
 
         public Auction GetAuction(string vehicleId)
         {
-            if (auctions.ContainsKey(vehicleId))
+            if (this.auctions.ContainsKey(vehicleId))
             {
-                return auctions[vehicleId];
+                return this.auctions[vehicleId];
             }
             else
             {
@@ -142,14 +136,14 @@ namespace CarAuctionManagementSystem.Domain
 
         public List<Auction> GetAuctions()
         {
-            return auctions.Select(x => x.Value).ToList();
+            return this.auctions.Select(x => x.Value).ToList();
         }
 
         public decimal GetHighestBid(string vehicleId)
         {
-            if (auctions.ContainsKey(vehicleId))
+            if (this.auctions.TryGetValue(vehicleId, out var value))
             {
-                return auctions[vehicleId].CurrentHighestBid;
+                return value.CurrentHighestBid;
             }
             else
             {
@@ -157,28 +151,23 @@ namespace CarAuctionManagementSystem.Domain
             }
         }
 
-        public IVehicle GetVehicleById(string uniqueIdentifier) => vehicles.FirstOrDefault(v => v.UniqueIdentifier == uniqueIdentifier);
+        public IVehicle GetVehicleById(string uniqueIdentifier) => this.vehicles.FirstOrDefault(v => v.UniqueIdentifier == uniqueIdentifier);
 
-        private bool IsVehicleTypeMatch(IVehicle vehicle, VehicleType? vehicleType)
+        private static bool IsVehicleTypeMatch(IVehicle vehicle, VehicleType? vehicleType)
         {
             if (!vehicleType.HasValue)
             {
                 return true;
             }
 
-            switch (vehicleType)
+            return vehicleType switch
             {
-                case VehicleType.Hatchback:
-                    return vehicle is Hatchback;
-                case VehicleType.Sedan:
-                    return vehicle is Sedan;
-                case VehicleType.SUV:
-                    return vehicle is SUV;
-                case VehicleType.Truck:
-                    return vehicle is Truck;
-                default:
-                    return false;
-            }
+                VehicleType.Hatchback => vehicle is Hatchback,
+                VehicleType.Sedan => vehicle is Sedan,
+                VehicleType.SUV => vehicle is SUV,
+                VehicleType.Truck => vehicle is Truck,
+                _ => false,
+            };
         }
 
         private static void ValidateVehicleId(string vehicleId)

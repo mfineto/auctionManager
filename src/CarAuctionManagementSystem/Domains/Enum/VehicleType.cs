@@ -5,6 +5,6 @@
         Hatchback,
         Sedan,
         SUV,
-        Truck
+        Truck,
     }
 }
